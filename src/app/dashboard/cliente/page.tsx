@@ -20,6 +20,9 @@ export default function Page() {
 
   // Estado para los clientes
   const [clientes, setClientes] = useState<any[]>([]);
+  
+  // Estado para el cliente seleccionado
+  const [clienteSeleccionado, setClienteSeleccionado] = useState<any | null>(null);
 
   // Función para obtener los clientes
   const fetchClientes = async () => {
@@ -52,9 +55,6 @@ export default function Page() {
 
   // Llamada a la API para eliminar un cliente
   const deleteCliente = async (id: number) => {
-
-    console.log("id", id);
-
     const response = await fetch(`/api/clientes/${id}`, {
       method: "DELETE",
     });
@@ -64,7 +64,41 @@ export default function Page() {
     } else {
       alert("Error al eliminar el cliente.");
     }
-  };  
+  };
+
+  // Función para seleccionar un cliente para editar
+  const seleccionarCliente = (cliente: any) => {
+    setClienteSeleccionado(cliente); // Establece el cliente seleccionado
+    setNombre(cliente.nombre); // Carga los datos del cliente en los inputs
+    setEmail(cliente.email);
+  };
+
+  // Función para actualizar un cliente
+  const actualizarCliente = async () => {
+    if (!clienteSeleccionado) return;
+
+    const response = await fetch(`/api/clientes/actualizar/${clienteSeleccionado.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nombre, email }),
+    });
+
+    if (response.ok) {
+      const clienteActualizado = await response.json();
+      // Actualiza el cliente en el estado
+      setClientes(clientes.map(cliente => 
+        cliente.id === clienteSeleccionado.id ? clienteActualizado : cliente
+      ));
+      // Limpia los inputs y deselecciona el cliente
+      setNombre("");
+      setEmail("");
+      setClienteSeleccionado(null);
+    } else {
+      alert("Error al actualizar el cliente.");
+    }
+  };
 
   // Usamos useEffect para obtener los clientes al montar el componente
   useEffect(() => {
@@ -93,6 +127,14 @@ export default function Page() {
           <IoAdd className="w-4 h-4" />
           Crear
         </Button>
+
+        {/* Si un cliente está seleccionado, mostrar el botón de actualizar */}
+        {clienteSeleccionado && (
+          <Button className="flex items-center gap-2" onClick={actualizarCliente}>
+            <IoPencil className="w-4 h-4" />
+            Actualizar
+          </Button>
+        )}
       </div>
 
       {/* Tabla */}
@@ -118,9 +160,9 @@ export default function Page() {
                 <TableCell>{cliente.email}</TableCell>
                 <TableCell>{new Date(cliente.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
-                    <Button className="mr-2" variant="blue">
-                    <IoEye className="w-4 h-4" />
-                    </Button>
+                  <Button className="mr-2" variant="blue" onClick={() => seleccionarCliente(cliente)}>
+                    <IoPencil className="w-4 h-4" />
+                  </Button>
                   <Button
                     variant="destructive"
                     onClick={() => deleteCliente(cliente.id)} // Llamada a la función deleteCliente
