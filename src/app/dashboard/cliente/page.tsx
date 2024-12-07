@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -8,85 +11,113 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { constants } from "buffer";
 import { IoAdd, IoEye, IoPencil, IoTrash } from "react-icons/io5";
 
-
-// Simulación de datos (deberían venir de la base de datos en producción)
-const clientes = [
-  { id: 1, nombre: "Juan Pérez", email: "juan.perez@example.com", createdAt: new Date() },
-  { id: 2, nombre: "María García", email: "maria.garcia@example.com", createdAt: new Date() },
-  { id: 3, nombre: "Carlos López", email: "carlos.lopez@example.com", createdAt: new Date() },
-];
-
 export default function Page() {
+  // Estado para los inputs de nombre y email
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+
+  // Estado para los clientes
+  const [clientes, setClientes] = useState<any[]>([]);
+
+  // Función para obtener los clientes
+  const fetchClientes = async () => {
+    const response = await fetch("/api/clientes");
+    if (response.ok) {
+      const data = await response.json();
+      setClientes(data); // Actualiza el estado con los clientes obtenidos
+    } else {
+      alert("Error al obtener los clientes.");
+    }
+  };
+
+  // Llamada a la API para crear un cliente
+  const createCliente = async () => {
+    const response = await fetch("/api/clientes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nombre, email }),
+    });
+
+    if (response.ok) {
+      const nuevoCliente = await response.json();
+      setClientes([...clientes, nuevoCliente]); // Actualiza la lista de clientes con el nuevo cliente
+    } else {
+      alert("Error al crear el cliente.");
+    }
+  };
+
+  // Usamos useEffect para obtener los clientes al montar el componente
+  useEffect(() => {
+    fetchClientes();
+  }, []); // Se ejecuta solo una vez al montar el componente
 
   return (
     <div className="space-y-6 p-6">
-      {/* Botones con Iconos */}
-      <div className="flex justify-end gap-2.5">
-        <Button className="flex items-center gap-2">
+      {/* Inputs para nombre y email */}
+      <div className="flex gap-4 items-center mb-4">
+        <input
+          type="text"
+          placeholder="Nombre del cliente"
+          className="px-4 py-2 border rounded-md"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+        />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          className="px-4 py-2 border rounded-md"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button className="flex items-center gap-2" onClick={createCliente}>
           <IoAdd className="w-4 h-4" />
-          Create
-        </Button>
-        <Button className="flex items-center gap-2">
-          <IoEye className="w-4 h-4" />
-          Read
-        </Button>
-        <Button className="flex items-center gap-2">
-          <IoPencil className="w-4 h-4" />
-          Update
-        </Button>
-        <Button variant="destructive" className="flex items-center gap-2">
-          <IoTrash className="w-4 h-4" />
-          Delete
+          Crear
         </Button>
       </div>
 
       {/* Tabla */}
-      <Table className="border border-gray-200 rounded-lg shadow-sm">
+      <Table className="border border-gray-200 rounded-lg shadow-sm mt-6">
         <TableCaption className="text-sm text-gray-500">
-          A list of your recent invoices.
+          Lista de clientes registrados.
         </TableCaption>
         <TableHeader className="bg-gray-100">
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Fecha de Creación</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow className="hover:bg-gray-50">
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>
-              <span className="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded">
-                Paid
-              </span>
-            </TableCell>
-            <TableCell>Credit Card</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-          </TableRow>
-          <TableRow className="hover:bg-gray-50">
-            <TableCell className="font-medium">INV002</TableCell>
-            <TableCell>
-              <span className="px-2 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded">
-                Pending
-              </span>
-            </TableCell>
-            <TableCell>PayPal</TableCell>
-            <TableCell className="text-right">$125.00</TableCell>
-          </TableRow>
-          <TableRow className="hover:bg-gray-50">
-            <TableCell className="font-medium">INV003</TableCell>
-            <TableCell>
-              <span className="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded">
-                Overdue
-              </span>
-            </TableCell>
-            <TableCell>Bank Transfer</TableCell>
-            <TableCell className="text-right">$300.00</TableCell>
-          </TableRow>
+          {clientes.length > 0 ? (
+            clientes.map((cliente) => (
+              <TableRow key={cliente.id} className="hover:bg-gray-50">
+                <TableCell className="font-medium">{cliente.id}</TableCell>
+                <TableCell>{cliente.nombre}</TableCell>
+                <TableCell>{cliente.email}</TableCell>
+                <TableCell>{new Date(cliente.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell className="text-right">
+                  <Button className="mr-2">
+                    <IoEye className="w-4 h-4" />
+                  </Button>
+                  <Button variant="destructive">
+                    <IoTrash className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                No hay clientes registrados.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
