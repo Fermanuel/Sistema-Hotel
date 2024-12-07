@@ -23,7 +23,7 @@ export default function Page() {
 
   // Función para obtener los clientes
   const fetchClientes = async () => {
-    const response = await fetch("/api/clientes");
+    const response = await fetch("/api/clientes/obtener");
     if (response.ok) {
       const data = await response.json();
       setClientes(data); // Actualiza el estado con los clientes obtenidos
@@ -34,7 +34,7 @@ export default function Page() {
 
   // Llamada a la API para crear un cliente
   const createCliente = async () => {
-    const response = await fetch("/api/clientes", {
+    const response = await fetch("/api/clientes/crear", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,6 +49,22 @@ export default function Page() {
       alert("Error al crear el cliente.");
     }
   };
+
+  // Llamada a la API para eliminar un cliente
+  const deleteCliente = async (id: number) => {
+
+    console.log("id", id);
+
+    const response = await fetch(`/api/clientes/${id}`, {
+      method: "DELETE",
+    });
+  
+    if (response.ok) {
+      setClientes(clientes.filter(cliente => cliente.id !== id)); // Actualiza el estado
+    } else {
+      alert("Error al eliminar el cliente.");
+    }
+  };  
 
   // Usamos useEffect para obtener los clientes al montar el componente
   useEffect(() => {
@@ -102,10 +118,13 @@ export default function Page() {
                 <TableCell>{cliente.email}</TableCell>
                 <TableCell>{new Date(cliente.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
-                  <Button className="mr-2">
+                    <Button className="mr-2" variant="blue">
                     <IoEye className="w-4 h-4" />
-                  </Button>
-                  <Button variant="destructive">
+                    </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => deleteCliente(cliente.id)} // Llamada a la función deleteCliente
+                  >
                     <IoTrash className="w-4 h-4" />
                   </Button>
                 </TableCell>
