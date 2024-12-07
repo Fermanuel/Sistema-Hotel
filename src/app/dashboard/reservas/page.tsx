@@ -77,7 +77,7 @@ export default function Reservaciones() {
   };
 
   const deleteReservacion = async (id: number) => {
-    const response = await fetch(`/api/reservas/${id}`, {
+    const response = await fetch(`/api/reservas/eliminar/${id}`, {
       method: "DELETE",
     });
 
@@ -90,7 +90,7 @@ export default function Reservaciones() {
 
   const finalizeReservacion = async (id: number) => {
     const fechaActual = new Date().toISOString(); // Obtener la fecha y hora actuales en formato ISO
-  
+
     const response = await fetch(`/api/reservas/finalizar/${id}`, {
       method: "PATCH",
       headers: {
@@ -100,13 +100,13 @@ export default function Reservaciones() {
         checkOut: fechaActual, // Enviar la fecha actual
       }),
     });
-  
+
     if (response.ok) {
       await fetchReservaciones(); // Refrescar las reservaciones
     } else {
       alert("Error al finalizar la reservación.");
     }
-  };  
+  };
 
   useEffect(() => {
     fetchClientes();
@@ -137,7 +137,7 @@ export default function Reservaciones() {
           <SelectContent>
             {habitaciones.map((habitacion) => (
               <SelectItem key={habitacion.id} value={String(habitacion.id)}>
-                {habitacion.numero}
+                {habitacion.numero} - {habitacion.tipo}
               </SelectItem>
             ))}
           </SelectContent>
@@ -189,13 +189,17 @@ export default function Reservaciones() {
                 </TableCell>
                 <TableCell>{new Date(reserva.checkIn).toLocaleString()}</TableCell>
                 <TableCell>
-                  {reserva.checkOut
-                    ? new Date(reserva.checkOut).toLocaleString()
-                    : "Reservación activa"}
+                  {reserva.checkOut ? (
+                    new Date(reserva.checkOut).toLocaleString()
+                  ) : (
+                    <Badge variant="success" className="px-2 py-1 text-sm">
+                      Activa
+                    </Badge>
+                  )}
                 </TableCell>
                 <TableCell>
                   {reserva.finalizada ? (
-                    <Badge variant="success">Finalizada</Badge>
+                    <Badge variant="warning">Finalizada</Badge>
                   ) : (
                     <Button variant="blue" onClick={() => finalizeReservacion(reserva.id)}>
                       Finalizar

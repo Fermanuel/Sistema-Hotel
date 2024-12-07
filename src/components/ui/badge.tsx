@@ -8,16 +8,27 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        success:
-          "border-transparent bg-success text-success-foreground shadow hover:bg-success/80",
-        default:
-          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground",
-      },
+        success: 
+          "bg-green-500 text-white shadow hover:bg-green-600", // Variante verde
+        default: 
+          "bg-primary text-primary-foreground shadow hover:bg-primary/80",
+        secondary: 
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: 
+          "bg-red-500 text-white shadow hover:bg-red-600", // Variante destructiva en rojo
+        outline: 
+          "border border-border text-foreground hover:bg-muted/10", // Variante de borde
+        info: 
+          "bg-cyan-500 text-white shadow hover:bg-cyan-600", // Variante de información en cyan
+        warning: 
+          "bg-yellow-500 text-white shadow hover:bg-yellow-600", // Variante de advertencia en amarillo
+        neutral: 
+          "bg-gray-500 text-white shadow hover:bg-gray-600", // Variante neutral en gris
+        light: 
+          "bg-white text-black shadow hover:bg-gray-100", // Variante clara (blanca)
+        dark: 
+          "bg-black text-white shadow hover:bg-gray-900", // Variante oscura (negra)
+      },      
     },
     defaultVariants: {
       variant: "default",
