@@ -23,7 +23,6 @@ model cliente {
   reserva reserva[]
 }
 
-
 model habitacion {
   id          Int      @id @default(autoincrement())
   numero      Int
@@ -37,14 +36,15 @@ model habitacion {
 }
 
 model reserva {
-  id        Int      @id @default(autoincrement())
-  clienteId Int
+  id           Int       @id @default(autoincrement())
+  clienteId    Int
   habitacionId Int
-  checkIn DateTime
-  checkOut DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  checkIn      DateTime
+  checkOut     DateTime?
+  finalizada   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  cliente     cliente   @relation(fields: [clienteId], references: [id])
-  habitacion  habitacion @relation(fields: [habitacionId], references: [id])
+  cliente    cliente    @relation(fields: [clienteId], references: [id])
+  habitacion habitacion @relation(fields: [habitacionId], references: [id])
 }
