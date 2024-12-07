@@ -1,6 +1,3 @@
-// https://tailwindcomponents.com/component/tailwind-css-admin-dashboard-layout
-// https://gist.github.com/Klerith/3949f1c8b884d7101e378dfb668f0f3a
-
 import Link from "next/link";
 
 const links = [
