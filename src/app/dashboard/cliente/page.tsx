@@ -55,7 +55,7 @@ export default function Page() {
 
   // Llamada a la API para eliminar un cliente
   const deleteCliente = async (id: number) => {
-    const response = await fetch(`/api/clientes/${id}`, {
+    const response = await fetch(`/api/clientes/eliminar/${id}`, {
       method: "DELETE",
     });
   
