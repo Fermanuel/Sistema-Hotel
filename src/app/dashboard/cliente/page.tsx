@@ -8,9 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { constants } from "buffer";
 import { IoAdd, IoEye, IoPencil, IoTrash } from "react-icons/io5";
 
+
+// Simulación de datos (deberían venir de la base de datos en producción)
+const clientes = [
+  { id: 1, nombre: "Juan Pérez", email: "juan.perez@example.com", createdAt: new Date() },
+  { id: 2, nombre: "María García", email: "maria.garcia@example.com", createdAt: new Date() },
+  { id: 3, nombre: "Carlos López", email: "carlos.lopez@example.com", createdAt: new Date() },
+];
+
 export default function Page() {
+
   return (
     <div className="space-y-6 p-6">
       {/* Botones con Iconos */}
