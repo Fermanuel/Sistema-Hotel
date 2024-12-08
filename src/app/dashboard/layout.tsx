@@ -1,9 +1,10 @@
 import Link from "next/link";
+import {IoPersonCircleOutline, IoTodayOutline, IoStorefrontOutline} from 'react-icons/io5';
 
 const links = [
-  { name: "Cliente", href: "cliente" },
-  { name: "Reservaciones", href: "reservas" },
-  { name: "Habitaciones", href: "habitaciones" },
+  { name: "Cliente", href: "cliente", icon: <IoPersonCircleOutline /> },
+  { name: "Reservaciones", href: "reservas", icon: <IoTodayOutline /> },
+  { name: "Habitaciones", href: "habitaciones", icon: <IoStorefrontOutline /> },
 ];
 
 export default function DashboardLayout({
@@ -109,16 +110,17 @@ export default function DashboardLayout({
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex-1 px-3 bg-white divide-y space-y-1">
                 <ul className="space-y-2 pb-2">
-                  {links.map((link) => (
+                    {links.map((link) => (
                     <li key={link.href}>
                       <Link
-                        href={link.href}
-                        className="text-base capitalize text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
+                      href={link.href}
+                      className="text-base capitalize text-gray-900 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group"
                       >
-                        <span className="ml-3">{link.name}</span>
+                      {link.icon && <span className="mr-3">{link.icon}</span>}
+                      <span className="ml-3">{link.name}</span>
                       </Link>
                     </li>
-                  ))}
+                    ))}
                 </ul>
               </div>
             </div>
@@ -254,9 +256,9 @@ export default function DashboardLayout({
             </div>
           </footer>
           <p className="text-center text-sm text-gray-500 my-10">
-            &copy; 2019-{new Date().getFullYear()}{" "}
+            &copy; 2021-{new Date().getFullYear()}{" "}
             <a href="#" className="hover:underline" target="_blank">
-              Themesberg
+              Sistema Hotel
             </a>
             . All rights reserved.
           </p>

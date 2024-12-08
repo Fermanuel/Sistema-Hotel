@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IoAdd, IoTrash } from "react-icons/io5";
+import { IoAdd, IoTrash, IoCheckmarkCircleOutline } from "react-icons/io5";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Toaster, toast } from 'sonner';
@@ -20,7 +20,7 @@ export default function Reservaciones() {
   const [clienteId, setClienteId] = useState("");
   const [habitacionId, setHabitacionId] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState("");
+  const [fechaFin] = useState("");
 
   const [clientes, setClientes] = useState<any[]>([]);
   const [habitaciones, setHabitaciones] = useState<any[]>([]);
@@ -191,7 +191,7 @@ export default function Reservaciones() {
                   {reserva.checkOut ? (
                     new Date(reserva.checkOut).toLocaleString()
                   ) : (
-                    <Badge variant="success" className="px-2 py-1 text-sm">
+                    <Badge variant="success">
                       Activa
                     </Badge>
                   )}
@@ -201,7 +201,7 @@ export default function Reservaciones() {
                     <Badge variant="warning">Finalizada</Badge>
                   ) : (
                     <Button variant="blue" onClick={() => finalizeReservacion(reserva.id)}>
-                      Finalizar
+                      <IoCheckmarkCircleOutline className="w-4 h-4" />
                     </Button>
                   )}
                 </TableCell>
