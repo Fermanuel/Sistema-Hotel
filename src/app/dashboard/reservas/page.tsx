@@ -14,6 +14,7 @@ import {
 import { IoAdd, IoTrash } from "react-icons/io5";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Toaster, toast } from 'sonner';
 
 export default function Reservaciones() {
   const [clienteId, setClienteId] = useState("");
@@ -71,6 +72,7 @@ export default function Reservaciones() {
 
     if (response.ok) {
       await fetchReservaciones();
+      toast.success("Reservación creada exitosamente.");
     } else {
       console.error("Error en la respuesta:", response.status);
     }
@@ -83,6 +85,7 @@ export default function Reservaciones() {
 
     if (response.ok) {
       setReservaciones(reservaciones.filter((reserva) => reserva.id !== id));
+      toast.success("Reservación eliminada exitosamente.");
     } else {
       alert("Error al eliminar la reservación.");
     }
@@ -103,6 +106,7 @@ export default function Reservaciones() {
 
     if (response.ok) {
       await fetchReservaciones(); // Refrescar las reservaciones
+      toast.success("Reservación finalizada exitosamente.");
     } else {
       alert("Error al finalizar la reservación.");
     }
@@ -116,6 +120,7 @@ export default function Reservaciones() {
 
   return (
     <div className="space-y-6 p-6">
+      <Toaster position="top-right" richColors/>
       <div className="flex gap-4 items-center mb-4">
         <Select value={clienteId} onValueChange={setClienteId}>
           <SelectTrigger className="px-4 py-2 border rounded-md">
@@ -148,12 +153,6 @@ export default function Reservaciones() {
           className="px-4 py-2 border rounded-md"
           value={fechaInicio}
           onChange={(e) => setFechaInicio(e.target.value)}
-        />
-        <input
-          type="datetime-local"
-          className="px-4 py-2 border rounded-md"
-          value={fechaFin}
-          onChange={(e) => setFechaFin(e.target.value)}
         />
         <Button className="flex items-center gap-2" onClick={createReservacion}>
           <IoAdd className="w-4 h-4" />

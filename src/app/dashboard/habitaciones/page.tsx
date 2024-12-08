@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { IoAdd, IoEye, IoPencil, IoTrash } from "react-icons/io5";
+import { Toaster, toast } from 'sonner';
 
 export default function HabitacionesPage() {
   // Estado para los inputs de habitación
@@ -50,6 +51,7 @@ export default function HabitacionesPage() {
     if (response.ok) {
       const nuevaHabitacion = await response.json();
       setHabitaciones([...habitaciones, nuevaHabitacion]); // Actualiza la lista de habitaciones con la nueva
+      toast.success("Habitación creada exitosamente.");
     } else {
       alert("Error al crear la habitación.");
     }
@@ -63,6 +65,7 @@ export default function HabitacionesPage() {
 
     if (response.ok) {
       setHabitaciones(habitaciones.filter(habitacion => habitacion.id !== id)); // Actualiza el estado
+      toast.success("Habitación eliminada exitosamente.");
     } else {
       alert("Error al eliminar la habitación.");
     }
@@ -101,6 +104,7 @@ export default function HabitacionesPage() {
       setPrecio(0);
       setDescripcion("");
       setHabitacionSeleccionada(null);
+      toast.success("Habitación actualizada exitosamente.");
     } else {
       alert("Error al actualizar la habitación.");
     }
@@ -113,6 +117,7 @@ export default function HabitacionesPage() {
 
   return (
     <div className="space-y-6 p-6">
+      <Toaster position="top-right" richColors/>
       {/* Inputs para número, tipo, precio y descripción */}
       <div className="flex gap-4 items-center mb-4">
         <input
