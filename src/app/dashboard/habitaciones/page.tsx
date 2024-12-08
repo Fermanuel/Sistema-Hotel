@@ -50,14 +50,13 @@ export default function HabitacionesPage() {
 
     if (response.ok) {
       const nuevaHabitacion = await response.json();
-      setHabitaciones([...habitaciones, nuevaHabitacion]); // Actualiza la lista de habitaciones con la nueva
+      setHabitaciones([...habitaciones, nuevaHabitacion]);
       toast.success("Habitación creada exitosamente.");
     } else {
       alert("Error al crear la habitación.");
     }
   };
 
-  // Llamada a la API para eliminar una habitación
   const deleteHabitacion = async (id: number) => {
     const response = await fetch(`/api/habitaciones/eliminar/${id}`, {
       method: "DELETE",
@@ -71,7 +70,6 @@ export default function HabitacionesPage() {
     }
   };
 
-  // Función para seleccionar una habitación para editar
   const seleccionarHabitacion = (habitacion: any) => {
     setHabitacionSeleccionada(habitacion); // Establece la habitación seleccionada
     setNumero(habitacion.numero); // Carga los datos de la habitación en los inputs
@@ -80,7 +78,6 @@ export default function HabitacionesPage() {
     setDescripcion(habitacion.descripcion || "");
   };
 
-  // Función para actualizar una habitación
   const actualizarHabitacion = async () => {
     if (!habitacionSeleccionada) return;
 

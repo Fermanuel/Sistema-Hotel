@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../lib/db"; // Asegúrate de que la ruta hacia `prisma` es correcta
+import prisma from "../../../../lib/db";
 
-// Manejar las solicitudes POST (crear cliente)
 export async function POST(req: Request) {
     try {
-        // Obtener los datos del cuerpo de la solicitud
+
         const { nombre, email } = await req.json();
 
-        console.log("nombre", nombre);
-        console.log("email", email);
-
-        // Verificar que los campos requeridos estén presentes
         if (!nombre || !email) {
             return NextResponse.json(
                 { message: "Faltan datos: nombre o email." },
@@ -18,7 +13,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Crear un nuevo cliente en la base de datos
         const nuevoCliente = await prisma.cliente.create({
             data: {
                 nombre,
@@ -26,7 +20,6 @@ export async function POST(req: Request) {
             },
         });
 
-        // Retornar el cliente creado en la respuesta
         return NextResponse.json(nuevoCliente, { status: 201 });
     } catch (error) {
         console.error("Error al crear el cliente:", error);
