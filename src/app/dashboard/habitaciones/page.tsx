@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { IoAdd, IoEye, IoPencil, IoTrash } from "react-icons/io5";
 import { Toaster, toast } from 'sonner';
+import { Badge } from "@/components/ui/badge";
 
 export default function HabitacionesPage() {
   // Estado para los inputs de habitación
@@ -20,10 +21,11 @@ export default function HabitacionesPage() {
   const [tipo, setTipo] = useState<string>("");
   const [precio, setPrecio] = useState<number>(0);
   const [descripcion, setDescripcion] = useState<string>("");
-  
+  const [estado, setEstado] = useState<string>("disponible"); // Estado de la habitación
+
   // Estado para las habitaciones
   const [habitaciones, setHabitaciones] = useState<any[]>([]);
-  
+
   // Estado para la habitación seleccionada
   const [habitacionSeleccionada, setHabitacionSeleccionada] = useState<any | null>(null);
 
@@ -45,7 +47,7 @@ export default function HabitacionesPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ numero, tipo, precio, descripcion }),
+      body: JSON.stringify({ numero, tipo, precio, descripcion, estado }), // Incluir estado
     });
 
     if (response.ok) {
@@ -76,6 +78,7 @@ export default function HabitacionesPage() {
     setTipo(habitacion.tipo);
     setPrecio(habitacion.precio);
     setDescripcion(habitacion.descripcion || "");
+    setEstado(habitacion.estado); // Cargar el estado de la habitación seleccionada
   };
 
   const actualizarHabitacion = async () => {
@@ -86,13 +89,13 @@ export default function HabitacionesPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ numero, tipo, precio, descripcion }),
+      body: JSON.stringify({ numero, tipo, precio, descripcion, estado }), // Incluir estado
     });
 
     if (response.ok) {
       const habitacionActualizada = await response.json();
       // Actualiza la habitación en el estado
-      setHabitaciones(habitaciones.map(habitacion => 
+      setHabitaciones(habitaciones.map(habitacion =>
         habitacion.id === habitacionSeleccionada.id ? habitacionActualizada : habitacion
       ));
       // Limpia los inputs y deselecciona la habitación
@@ -100,6 +103,7 @@ export default function HabitacionesPage() {
       setTipo("");
       setPrecio(0);
       setDescripcion("");
+      setEstado("disponible"); // Resetear el estado
       setHabitacionSeleccionada(null);
       toast.success("Habitación actualizada exitosamente.");
     } else {
@@ -114,7 +118,7 @@ export default function HabitacionesPage() {
 
   return (
     <div className="space-y-6 p-6">
-      <Toaster position="top-right" richColors/>
+      <Toaster position="top-right" richColors />
       {/* Inputs para número, tipo, precio y descripción */}
       <div className="flex gap-4 items-center mb-4">
         <input
@@ -145,6 +149,7 @@ export default function HabitacionesPage() {
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
         />
+
         <Button className="flex items-center gap-2" onClick={createHabitacion}>
           <IoAdd className="w-4 h-4" />
           Crear
@@ -171,6 +176,7 @@ export default function HabitacionesPage() {
             <TableHead>Tipo</TableHead>
             <TableHead>Precio</TableHead>
             <TableHead>Descripción</TableHead>
+            <TableHead>Estado</TableHead> {/* Columna para el estado */}
             <TableHead>Fecha de Creación</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
@@ -184,6 +190,18 @@ export default function HabitacionesPage() {
                 <TableCell>{habitacion.tipo}</TableCell>
                 <TableCell>${habitacion.precio}</TableCell>
                 <TableCell>{habitacion.descripcion || "Sin descripción"}</TableCell>
+                <TableCell>
+                  <Badge
+                    className={`${habitacion.estado === "disponible"
+                        ? "bg-green-500 text-white"
+                        : habitacion.estado === "reservada"
+                          ? "bg-yellow-500 text-black"
+                          : "bg-red-500 text-white"
+                      }`}
+                  >
+                    {habitacion.estado}
+                  </Badge>
+                </TableCell>
                 <TableCell>{new Date(habitacion.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
                   <Button className="mr-2" variant="blue" onClick={() => seleccionarHabitacion(habitacion)}>
@@ -200,7 +218,7 @@ export default function HabitacionesPage() {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={7} className="text-center">
+              <TableCell colSpan={8} className="text-center">
                 No hay habitaciones registradas.
               </TableCell>
             </TableRow>
