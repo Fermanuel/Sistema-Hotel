@@ -60,7 +60,7 @@ export default function Reservaciones() {
     if (!clienteId || !habitacionId || !fechaInicio) {
       return toast.warning("Por favor completa todos los campos.");
     }
-  
+
     // Cambiar el estado de la habitación a "reservada"
     const responseHabitacion = await fetch(`/api/habitaciones/actualizarEstado/${habitacionId}`, {
       method: "PUT",  // Usamos PUT porque estamos actualizando el estado
@@ -69,11 +69,11 @@ export default function Reservaciones() {
       },
       body: JSON.stringify({ estado: "reservada" }),  // Solo actualizamos el estado
     });
-  
+
     if (!responseHabitacion.ok) {
       return toast.error("Error al actualizar la habitación.");
     }
-  
+
     // Crear la reservación
     const response = await fetch("/api/reservas/crear", {
       method: "POST",
@@ -87,14 +87,15 @@ export default function Reservaciones() {
         checkOut: fechaFin || null,
       }),
     });
-  
+
     if (response.ok) {
       await fetchReservaciones();
+      await fetchHabitaciones();
       toast.success("Reservación creada exitosamente.");
     } else {
       console.error("Error en la respuesta:", response.status);
     }
-  };  
+  };
 
   const deleteReservacion = async (id: number) => {
     const response = await fetch(`/api/reservas/eliminar/${id}`, {
@@ -124,6 +125,7 @@ export default function Reservaciones() {
 
     if (response.ok) {
       await fetchReservaciones(); // Refrescar las reservaciones
+      await fetchHabitaciones();
       toast.success("Reservación finalizada exitosamente.");
     } else {
       alert("Error al finalizar la reservación.");
@@ -164,7 +166,21 @@ export default function Reservaciones() {
                 value={String(habitacion.id)}
                 disabled={habitacion.estado !== "disponible"} // Deshabilitar si no está disponible
               >
-                {habitacion.numero} - {habitacion.tipo} - {habitacion.estado}
+                <div className="flex items-center justify-between">
+                  <span>
+                    {habitacion.numero} - {habitacion.tipo} - 
+                  </span>
+                  <Badge
+                    className={`ml-2 ${habitacion.estado === "disponible"
+                        ? "bg-green-500 text-white"
+                        : habitacion.estado === "reservada"
+                          ? "bg-yellow-500 text-black"
+                          : "bg-red-500 text-white"
+                      }`}
+                  >
+                    {habitacion.estado}
+                  </Badge>
+                </div>
               </SelectItem>
             ))}
           </SelectContent>
