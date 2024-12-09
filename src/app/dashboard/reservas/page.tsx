@@ -61,20 +61,18 @@ export default function Reservaciones() {
       return toast.warning("Por favor completa todos los campos.");
     }
 
-    // Cambiar el estado de la habitación a "reservada"
     const responseHabitacion = await fetch(`/api/habitaciones/actualizarEstado/${habitacionId}`, {
-      method: "PUT",  // Usamos PUT porque estamos actualizando el estado
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ estado: "reservada" }),  // Solo actualizamos el estado
+      body: JSON.stringify({ estado: "reservada" }),
     });
 
     if (!responseHabitacion.ok) {
       return toast.error("Error al actualizar la habitación.");
     }
 
-    // Crear la reservación
     const response = await fetch("/api/reservas/crear", {
       method: "POST",
       headers: {
@@ -111,7 +109,7 @@ export default function Reservaciones() {
   };
 
   const finalizeReservacion = async (id: number) => {
-    const fechaActual = new Date().toISOString(); // Obtener la fecha y hora actuales en formato ISO
+    const fechaActual = new Date().toISOString();
 
     const response = await fetch(`/api/reservas/finalizar/${id}`, {
       method: "PATCH",
@@ -119,12 +117,12 @@ export default function Reservaciones() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        checkOut: fechaActual, // Enviar la fecha actual
+        checkOut: fechaActual,
       }),
     });
 
     if (response.ok) {
-      await fetchReservaciones(); // Refrescar las reservaciones
+      await fetchReservaciones();
       await fetchHabitaciones();
       toast.success("Reservación finalizada exitosamente.");
     } else {
@@ -164,7 +162,7 @@ export default function Reservaciones() {
               <SelectItem
                 key={habitacion.id}
                 value={String(habitacion.id)}
-                disabled={habitacion.estado !== "disponible"} // Deshabilitar si no está disponible
+                disabled={habitacion.estado !== "disponible"}
               >
                 <div className="flex items-center justify-between">
                   <span>
