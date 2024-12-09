@@ -29,6 +29,7 @@ model habitacion {
   tipo        String
   precio      Float
   descripcion String?
+  estado      String   @default("disponible")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

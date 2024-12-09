@@ -7,11 +7,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         // Obtener los datos del cuerpo de la solicitud
         const { numero, tipo, precio, descripcion } = await req.json();
 
-        console.log("numero", numero);
-        console.log("tipo", tipo);
-        console.log("precio", precio);
-        console.log("descripcion", descripcion);
-
         // Verificar que los campos requeridos estén presentes
         if (numero === undefined || !tipo || precio === undefined) {
             return NextResponse.json(

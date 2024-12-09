@@ -11,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IoAdd, IoEye, IoPencil, IoTrash } from "react-icons/io5";
+import { IoAdd, IoPencil, IoTrash } from "react-icons/io5";
+import { Toaster, toast } from 'sonner';
 
 export default function Page() {
   // Estado para los inputs de nombre y email
@@ -48,6 +49,7 @@ export default function Page() {
     if (response.ok) {
       const nuevoCliente = await response.json();
       setClientes([...clientes, nuevoCliente]); // Actualiza la lista de clientes con el nuevo cliente
+      toast.success("Cliente creado exitosamente.");
     } else {
       alert("Error al crear el cliente.");
     }
@@ -61,6 +63,7 @@ export default function Page() {
   
     if (response.ok) {
       setClientes(clientes.filter(cliente => cliente.id !== id)); // Actualiza el estado
+      toast.success("Cliente eliminado exitosamente.");
     } else {
       alert("Error al eliminar el cliente.");
     }
@@ -95,6 +98,7 @@ export default function Page() {
       setNombre("");
       setEmail("");
       setClienteSeleccionado(null);
+      toast.success("Cliente actualizado exitosamente.");
     } else {
       alert("Error al actualizar el cliente.");
     }
@@ -107,6 +111,7 @@ export default function Page() {
 
   return (
     <div className="space-y-6 p-6">
+      <Toaster position="top-right" richColors />
       {/* Inputs para nombre y email */}
       <div className="flex gap-4 items-center mb-4">
         <input

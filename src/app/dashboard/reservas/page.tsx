@@ -57,6 +57,24 @@ export default function Reservaciones() {
   };
 
   const createReservacion = async () => {
+    if (!clienteId || !habitacionId || !fechaInicio) {
+      return toast.warning("Por favor completa todos los campos.");
+    }
+  
+    // Cambiar el estado de la habitación a "reservada"
+    const responseHabitacion = await fetch(`/api/habitaciones/actualizarEstado/${habitacionId}`, {
+      method: "PUT",  // Usamos PUT porque estamos actualizando el estado
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ estado: "reservada" }),  // Solo actualizamos el estado
+    });
+  
+    if (!responseHabitacion.ok) {
+      return toast.error("Error al actualizar la habitación.");
+    }
+  
+    // Crear la reservación
     const response = await fetch("/api/reservas/crear", {
       method: "POST",
       headers: {
@@ -69,14 +87,14 @@ export default function Reservaciones() {
         checkOut: fechaFin || null,
       }),
     });
-
+  
     if (response.ok) {
       await fetchReservaciones();
       toast.success("Reservación creada exitosamente.");
     } else {
       console.error("Error en la respuesta:", response.status);
     }
-  };
+  };  
 
   const deleteReservacion = async (id: number) => {
     const response = await fetch(`/api/reservas/eliminar/${id}`, {
@@ -120,7 +138,7 @@ export default function Reservaciones() {
 
   return (
     <div className="space-y-6 p-6">
-      <Toaster position="top-right" richColors/>
+      <Toaster position="top-right" richColors />
       <div className="flex gap-4 items-center mb-4">
         <Select value={clienteId} onValueChange={setClienteId}>
           <SelectTrigger className="px-4 py-2 border rounded-md">
@@ -141,8 +159,12 @@ export default function Reservaciones() {
           </SelectTrigger>
           <SelectContent>
             {habitaciones.map((habitacion) => (
-              <SelectItem key={habitacion.id} value={String(habitacion.id)}>
-                {habitacion.numero} - {habitacion.tipo}
+              <SelectItem
+                key={habitacion.id}
+                value={String(habitacion.id)}
+                disabled={habitacion.estado !== "disponible"} // Deshabilitar si no está disponible
+              >
+                {habitacion.numero} - {habitacion.tipo} - {habitacion.estado}
               </SelectItem>
             ))}
           </SelectContent>

@@ -14,6 +14,7 @@ CREATE TABLE "habitacion" (
     "tipo" TEXT NOT NULL,
     "precio" REAL NOT NULL,
     "descripcion" TEXT,
+    "estado" TEXT NOT NULL DEFAULT 'disponible',
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
