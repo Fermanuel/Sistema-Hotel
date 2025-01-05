@@ -73,12 +73,12 @@ export default function HabitacionesPage() {
   };
 
   const seleccionarHabitacion = (habitacion: any) => {
-    setHabitacionSeleccionada(habitacion); // Establece la habitación seleccionada
-    setNumero(habitacion.numero); // Carga los datos de la habitación en los inputs
+    setHabitacionSeleccionada(habitacion);
+    setNumero(habitacion.numero);
     setTipo(habitacion.tipo);
     setPrecio(habitacion.precio);
     setDescripcion(habitacion.descripcion || "");
-    setEstado(habitacion.estado); // Cargar el estado de la habitación seleccionada
+    setEstado(habitacion.estado);
   };
 
   const actualizarHabitacion = async () => {

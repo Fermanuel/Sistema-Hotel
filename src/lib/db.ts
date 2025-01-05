@@ -4,6 +4,11 @@ const prismaClientSingleton = () => {
   return new PrismaClient()
 }
 
+/**
+ * Extiende el objeto globalThis para incluir una propiedad prismaGlobal.
+ * La propiedad prismaGlobal es del tipo devuelto por la función prismaClientSingleton.
+ * Esto permite tener una instancia de cliente Prisma accesible globalmente.
+ */
 declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
